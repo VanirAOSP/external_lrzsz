@@ -54,6 +54,15 @@ long Locbit = LLITOUT;	/* Bit SUPPOSED to disable output translations */
 # endif
 #endif
 
+/* Android lacks tcdrain() */
+#ifdef ANDROID
+#include <sys/ioctl.h>
+static inline int tcdrain(int fd)
+{
+	return ioctl(fd, TCSBRK, 1);
+}
+#endif
+
 #if defined(HOWMANY) && HOWMANY  > 255
 #ifndef NFGVMIN
 Howmany must be 255 or less

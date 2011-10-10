@@ -27,8 +27,10 @@
 #include <sys/types.h>
 
 #ifdef __GNUC__
+#ifndef HAVE_ALLOCA
 # define alloca __builtin_alloca
 # define HAVE_ALLOCA 1
+#endif
 #else
 # if defined HAVE_ALLOCA_H || defined _LIBC
 #  include <alloca.h>
