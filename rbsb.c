@@ -54,13 +54,22 @@ long Locbit = LLITOUT;	/* Bit SUPPOSED to disable output translations */
 # endif
 #endif
 
-/* Android lacks tcdrain() */
 #ifdef ANDROID
+/* Android prior to 4.2 lacks tcdrain().
+ * What we're doing here is fairly evil - but necessary since
+ * Bionic doesn't export any version identifier or the likes.
+ * We do know that 4.2 is the version introducing tcdrain() and
+ * also KLOG_CONSOLE_OFF -- completely unrelated, but something
+ * we can check for...
+ */
+#include <sys/klog.h>
+#ifndef KLOG_CONSOLE_OFF
 #include <sys/ioctl.h>
 static inline int tcdrain(int fd)
 {
 	return ioctl(fd, TCSBRK, 1);
 }
+#endif
 #endif
 
 #if defined(HOWMANY) && HOWMANY  > 255
